@@ -452,6 +452,14 @@ function onFormSubmitComplementoLinha(formData, aba, headers) {
     rowData[getColumnIndex(headers, MAPEAMENTO_COLUNAS.FROTA_VEICULO)] = formData.frota_veiculos;
     rowData[getColumnIndex(headers, MAPEAMENTO_COLUNAS.QTD_VENDIDAS_FROTA)] = formData.pecasDS_vendidas;
     rowData[getColumnIndex(headers, MAPEAMENTO_COLUNAS.TIME_REST_FROTA)] = formData.frota_rodagem;
+    const oemMercadoIndex = getColumnIndex(headers, MAPEAMENTO_COLUNAS.OEM_MERCADO);
+    if (oemMercadoIndex !== -1) {
+      if (formData.mercadoOEM === "Sim") {
+        rowData[oemMercadoIndex] = formData.mercadoOEM_valor; // Salva o texto digitado
+      } else {
+        rowData[oemMercadoIndex] = formData.mercadoOEM; // Salva "Não"
+      }
+    }
 
     // Exemplo para o PartNumberDS:
     const partNumberDSIndex = getColumnIndex(headers, MAPEAMENTO_COLUNAS.PART_NUMBER_DS);

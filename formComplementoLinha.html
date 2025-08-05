@@ -120,6 +120,17 @@
     <div class="form-group"><label for="pecasDS_vendidas">Peças DS vendidas no mês:</label><input type="number" id="pecasDS_vendidas" min="0"></div>
     <div class="form-group"><label for="frota_rodagem">Frota em rodagem:</label><input type="number" id="frota_rodagem" min="0"></div>
     <div class="form-group">
+    <div class="form-group">
+        <label>Possui peça OEM no mercado?</label>
+        <div>
+            <input type="radio" id="oem_sim" name="mercadoOEM" value="Sim"> Sim
+            <input type="radio" id="oem_nao" name="mercadoOEM" value="Não" checked> Não
+        </div>
+    </div>
+    <div id="oem_details_group" class="form-group" style="display: none;">
+        <label for="mercadoOEM_valor">Quais/Observações:</label>
+        <textarea id="mercadoOEM_valor" name="mercadoOEM_valor" rows="3"></textarea>
+    </div>  
         <label>Existe concorrente:</label>
         <div>
             <input type="radio" id="concorrente_sim" name="existe_concorrente" value="Sim" onchange="toggleConcorrentes()"> Sim
@@ -190,8 +201,13 @@
     }
 
     function toggleConcorrentes() {
-        const display = document.querySelector('input[name="existe_concorrente"]:checked').value === 'Sim' ? 'block' : 'none';
-        document.getElementById('concorrentes_group').style.display = display;
+      const display = document.querySelector('input[name="existe_concorrente"]:checked').value === 'Sim' ? 'block' : 'none';
+      document.getElementById('concorrentes_group').style.display = display;
+    }
+
+    function toggleOemField() {
+      const display = document.querySelector('input[name="mercadoOEM"]:checked').value === 'Sim' ? 'block' : 'none';
+      document.getElementById('oem_details_group').style.display = display;
     }
 
     function handleLinhaProdutoChange() {
@@ -262,10 +278,20 @@
             frota_veiculos: document.getElementById('frota_veiculos').value,
             pecasDS_vendidas: document.getElementById('pecasDS_vendidas').value,
             frota_rodagem: document.getElementById('frota_rodagem').value,
+            mercadoOEM: document.querySelector('input[name="mercadoOEM"]:checked').value,
+            mercadoOEM_valor: document.getElementById('mercadoOEM_valor').value,
             existe_concorrente: document.querySelector('input[name="existe_concorrente"]:checked').value,
             concorrente_1_nome: document.getElementById('concorrente_1_nome').value,
             concorrente_1_obs: document.getElementById('concorrente_1_obs').value,
-            imagem: fileData 
+            concorrente_2_nome: document.getElementById('concorrente_2_nome').value,
+            concorrente_2_obs: document.getElementById('concorrente_2_obs').value,
+            concorrente_3_nome: document.getElementById('concorrente_3_nome').value,
+            concorrente_3_obs: document.getElementById('concorrente_3_obs').value,
+            concorrente_4_nome: document.getElementById('concorrente_4_nome').value,
+            concorrente_4_obs: document.getElementById('concorrente_4_obs').value,
+            concorrente_5_nome: document.getElementById('concorrente_5_nome').value,
+            concorrente_5_obs: document.getElementById('concorrente_5_obs').value,
+            imagem: fileData  
         };
 
         google.script.run
@@ -281,4 +307,5 @@
     document.getElementById('btnEnviarComplemento').addEventListener('click', enviarFormularioComplemento);
     document.querySelectorAll('input[name="existe_concorrente"]').forEach(radio => radio.addEventListener('change', toggleConcorrentes));
     document.getElementById('linhaProduto').addEventListener('change', handleLinhaProdutoChange);
+    document.querySelectorAll('input[name="mercadoOEM"]').forEach(radio => radio.addEventListener('change', toggleOemField));
 </script>

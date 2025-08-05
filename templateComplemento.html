@@ -38,15 +38,15 @@
         
         <div class="section-title">Análise Financeira e de Investimento</div>
         <table>
-            <tr><td class="label">Investimento Ferramental (R$)</td><td><?!= parseFloat(formData.investimento_ferramental_comp).toFixed(2) ?></td></tr>
+            <tr><td class="label">Investimento Ferramental (R$)</td><td>R$ <?!= parseFloat(formData.investimento_ferramental_comp || 0).toFixed(2) ?></td></tr>
             <tr><td class="label">Responsável (Ferramental)</td><td><?!= formData.resp_inv_ferramental_comp ?></td></tr>
-            <tr><td class="label">Investimento Amostra (R$)</td><td><?!= parseFloat(formData.investimento_amostra_comp).toFixed(2) ?></td></tr>
+            <tr><td class="label">Investimento Amostra (R$)</td><td>R$ <?!= parseFloat(formData.investimento_amostra_comp || 0).toFixed(2) ?></td></tr>
             <tr><td class="label">Responsável (Amostra)</td><td><?!= formData.resp_inv_amostra_comp ?></td></tr>
             <tr><td class="label">Data do Orçamento da Amostra</td><td><?!= formData.data_orcamento_amostra_comp ?></td></tr>
             <tr><td class="label">Volume Mensal (und)</td><td><?!= formData.volume_mensal_comp ?></td></tr>
-            <tr><td class="label">Preço de Referência (R$)</td><td><?!= parseFloat(formData.preco_referencia_comp).toFixed(2) ?></td></tr>
-            <tr><td class="label">Mark Up (%)</td><td><?!= parseFloat(formData.markup_comp).toFixed(2) ?></td></tr>
-            <tr><td class="label"><strong>Investimento Total (R$)</strong></td><td><strong><?!= investimentoComp.toFixed(2) ?></strong></td></tr>
+            <tr><td class="label">Preço de Referência (R$)</td><td>R$ <?!= parseFloat(formData.preco_referencia_comp || 0).toFixed(2) ?></td></tr>
+            <tr><td class="label">Mark Up (%)</td><td><?!= parseFloat(formData.markup_comp || 0).toFixed(2) ?>%</td></tr>
+            <tr><td class="label"><strong>Investimento Total (R$)</strong></td><td><strong>R$ <?!= investimentoComp.toFixed(2) ?></strong></td></tr>
             <tr><td class="label"><strong>Payback (meses)</strong></td><td><strong><?!= paybackComp.toFixed(2) ?></strong></td></tr>
         </table>
         
@@ -56,14 +56,24 @@
             <tr><td class="label">Frota de Veículos</td><td><?!= formData.frota_veiculos ?></td></tr>
             <tr><td class="label">Peças DS Vendidas no Mês</td><td><?!= formData.pecasDS_vendidas ?></td></tr>
             <tr><td class="label">Frota em Rodagem</td><td><?!= formData.frota_rodagem ?></td></tr>
+            
+            <tr><td class="label">Possui Peça OEM no Mercado?</td><td><?!= formData.mercadoOEM ?></td></tr>
+            <? if (formData.mercadoOEM === 'Sim' && formData.mercadoOEM_valor) { ?>
+                <tr><td class="label">Observações OEM</td><td><?!= formData.mercadoOEM_valor ?></td></tr>
+            <? } ?>
         </table>
 
         <div class="section-title">Concorrência</div>
         <table>
             <tr><td class="label">Existe Concorrente?</td><td><?!= formData.existe_concorrente ?></td></tr>
-            <? if (formData.existe_concorrente === 'Sim' && formData.concorrente_1_nome) { ?>
-                <tr><td class="label">Concorrente 1</td><td><?!= formData.concorrente_1_nome ?></td></tr>
-                <tr><td class="label">Obs. Concorrente 1</td><td><?!= formData.concorrente_1_obs ?></td></tr>
+            
+            <? if (formData.existe_concorrente === 'Sim') { ?>
+                <? for (var i = 1; i <= 5; i++) { ?>
+                    <? if (formData['concorrente_' + i + '_nome']) { ?>
+                        <tr><td class="label" style="background-color: #e0e0e0;">Concorrente <?= i ?></td><td style="background-color: #e0e0e0;"><?!= formData['concorrente_' + i + '_nome'] ?></td></tr>
+                        <tr><td class="label">Obs. Concorrente <?= i ?></td><td><?!= formData['concorrente_' + i + '_obs'] ?></td></tr>
+                    <? } ?>
+                <? } ?>
             <? } ?>
         </table>
         
