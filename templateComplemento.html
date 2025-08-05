@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <base target="_top">
+    <style>
+        body { font-family: Arial, sans-serif; color: #333; margin: 0; padding: 20px; background-color: #f9f9f9; }
+        .container { background-color: #ffffff; border: 1px solid #ddd; padding: 20px; max-width: 700px; margin: auto; }
+        .header { font-size: 22px; font-weight: bold; color: #f57c00; margin-bottom: 20px; }
+        .section-title { font-size: 18px; font-weight: bold; color: #333; margin-top: 25px; margin-bottom: 10px; border-bottom: 2px solid #f57c00; padding-bottom: 5px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        td.label { font-weight: bold; background-color: #f2f2f2; width: 40%; }
+        .footer { margin-top: 30px; font-size: 12px; color: #888; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">Análise de Projeto: Complemento de Linha</div>
+        <p>Olá, <?!= nomeEngenheiro ?>.</p>
+        <p>Um novo projeto foi submetido para sua análise com os seguintes detalhes:</p>
+
+        <div class="section-title">Dados de Identificação</div>
+        <table>
+            <tr><td class="label">Part Number DS</td><td><?!= formData.partNumberDS ?></td></tr>
+            <tr><td class="label">Colaborador DS</td><td><?!= formData.colaboradorDS ?></td></tr>
+            <tr><td class="label">Solicitante</td><td><?!= formData.solicitante ?></td></tr>
+            <tr><td class="label">Part Number Original</td><td><?!= formData.partNumber ?></td></tr>
+            <tr><td class="label">Tipo de Projeto</td><td><?!= formData.tipoProjeto ?></td></tr>
+        </table>
+
+        <div class="section-title">Detalhes do Produto</div>
+        <table>
+            <tr><td class="label">Linha de Produto</td><td><?!= formData.linhaProduto.replace(/_/g, ' ') ?></td></tr>
+            <tr><td class="label">Tipo de Desenvolvimento</td><td><?!= formData.tipoDesenvolvimento ?></td></tr>
+            <tr><td class="label">Curva de Venda</td><td><?!= formData.curva_venda_comp ?></td></tr>
+            <tr><td class="label">Tempo de Desenvolvimento</td><td><?!= formData.tempo_desenvolvimento_comp ?></td></tr>
+        </table>
+        
+        <div class="section-title">Análise Financeira e de Investimento</div>
+        <table>
+            <tr><td class="label">Investimento Ferramental (R$)</td><td><?!= parseFloat(formData.investimento_ferramental_comp).toFixed(2) ?></td></tr>
+            <tr><td class="label">Responsável (Ferramental)</td><td><?!= formData.resp_inv_ferramental_comp ?></td></tr>
+            <tr><td class="label">Investimento Amostra (R$)</td><td><?!= parseFloat(formData.investimento_amostra_comp).toFixed(2) ?></td></tr>
+            <tr><td class="label">Responsável (Amostra)</td><td><?!= formData.resp_inv_amostra_comp ?></td></tr>
+            <tr><td class="label">Data do Orçamento da Amostra</td><td><?!= formData.data_orcamento_amostra_comp ?></td></tr>
+            <tr><td class="label">Volume Mensal (und)</td><td><?!= formData.volume_mensal_comp ?></td></tr>
+            <tr><td class="label">Preço de Referência (R$)</td><td><?!= parseFloat(formData.preco_referencia_comp).toFixed(2) ?></td></tr>
+            <tr><td class="label">Mark Up (%)</td><td><?!= parseFloat(formData.markup_comp).toFixed(2) ?></td></tr>
+            <tr><td class="label"><strong>Investimento Total (R$)</strong></td><td><strong><?!= investimentoComp.toFixed(2) ?></strong></td></tr>
+            <tr><td class="label"><strong>Payback (meses)</strong></td><td><strong><?!= paybackComp.toFixed(2) ?></strong></td></tr>
+        </table>
+        
+        <div class="section-title">Análise de Mercado</div>
+        <table>
+            <tr><td class="label">Frota por Aplicação</td><td><?!= formData.frota_aplicacao ?></td></tr>
+            <tr><td class="label">Frota de Veículos</td><td><?!= formData.frota_veiculos ?></td></tr>
+            <tr><td class="label">Peças DS Vendidas no Mês</td><td><?!= formData.pecasDS_vendidas ?></td></tr>
+            <tr><td class="label">Frota em Rodagem</td><td><?!= formData.frota_rodagem ?></td></tr>
+        </table>
+
+        <div class="section-title">Concorrência</div>
+        <table>
+            <tr><td class="label">Existe Concorrente?</td><td><?!= formData.existe_concorrente ?></td></tr>
+            <? if (formData.existe_concorrente === 'Sim' && formData.concorrente_1_nome) { ?>
+                <tr><td class="label">Concorrente 1</td><td><?!= formData.concorrente_1_nome ?></td></tr>
+                <tr><td class="label">Obs. Concorrente 1</td><td><?!= formData.concorrente_1_obs ?></td></tr>
+            <? } ?>
+        </table>
+        
+        <div class="footer">
+            Esta é uma mensagem automática gerada pelo sistema Stage-in-Gate.
+        </div>
+    </div>
+</body>
+</html>

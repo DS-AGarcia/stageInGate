@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        color: #333;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+      }
+      th, td {
+        border: 1px solid #ccc;
+        padding: 8px;
+        text-align: center;
+      }
+      th {
+        background-color: #007acc;
+        color: white;
+      }
+      tr:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+      .section-title {
+        margin-top: 20px;
+        font-weight: bold;
+        font-size: 16px;
+        color: #007acc;
+      }
+    </style>
+  </head>
+  <body>
+    <p>Olá,</p>
+
+    <p>Segue abaixo os detalhes do projeto para introdução de uma <strong>linha nova</strong>:</p>
+
+    <div class="section-title">Dados do Projeto</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Part Number</th>
+          <th>Volume Mensal</th>
+          <th>Preço de Referência (R$)</th>
+          <th>Mark Up</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><?= partNumber ?></td>
+          <td><?= volumeMensal ?></td>
+          <td><?= precoReferencia ?></td>
+          <td><?= markup ?></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Investimento da Linha Nova</div>
+      <table>
+        <tr>
+        <th>Investimento Total (R$)</th>
+        <td><?= investimentoNova.toFixed(2) ?></td>
+      </tr>
+    </table>
+
+    <div class="section-title">Resultados Financeiros</div>
+    <table>
+      <tbody>
+        <tr>
+          <th>Faturamento Mensal Previsto (R$)</th>
+          <th>Payback (meses)</th>
+          <th>Participação no Faturamento</th>
+        </tr>
+        <tr>
+          <td><?= faturamentoPrevisto.toFixed(2) ?></td>
+          <td><?= payback.toFixed(2) ?></td>
+          <td><?= (participacao * 100).toFixed(2) ?>%</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>Ficamos à disposição para dúvidas ou análises complementares.</p>
+    <p>Atenciosamente,<br/>Time de Engenharia</p>
+  </body>
+</html>
+
+

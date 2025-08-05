@@ -1,5 +1,6 @@
 // ID da planilha Google (substitua pelo seu ID real)
-const SPREADSHEET_ID = '13b-Fxii7FBsjiHP36t2t53uD5-fYCF0V9mmNqZPrRpQ'; // <<<<< ATENÇÃO: SUBSTITUA Pelo ID da sua planilha aqui!
+const SPREADSHEET_ID = '13b-Fxii7FBsjiHP36t2t53uD5-fYCF0V9mmNqZPrRpQ';
+const DRIVE_FOLDER_ID = '1icoy84un660p-4NiJRlYUvOOZZ2NoXcE';
 
 const MAPEAMENTO_COLUNAS = {
   // Campos básicos (colunas 1-10)
@@ -240,7 +241,7 @@ function getFormHTML(tipo) {
  * @param {GoogleAppsScript.Spreadsheet.Sheet} aba - A aba de destino para salvar os dados.
  * @param {Object} headers - O cabeçalho da aba de destino (mapeamento).
  */
-function onFormSubmitLinhaNova(formData, aba, headers) {
+/*function onFormSubmitLinhaNova(formData, aba, headers) {
   logExecucao("FormularioHTML", "onFormSubmitLinhaNova", "debug", "Inicio", "Dados de Linha Nova: " + JSON.stringify(formData));
 
   try {
@@ -402,249 +403,118 @@ function onFormSubmitLinhaNova(formData, aba, headers) {
     throw new Error(`Erro ao processar formulário Linha Nova: ${e.message}`);
   }
 }
-
+*/
 /**
  * Função para processar o formulário quando o Tipo de Projeto for "Complemento de Linha".
  * @param {Object} formData - Os dados do formulário enviados.
  * @param {GoogleAppsScript.Spreadsheet.Sheet} aba - A aba de destino para salvar os dados.
  * @param {Object} headers - O cabeçalho da aba de destino (mapeamento).
  */
+// Substitua a função existente em seu main.gs por esta versão validada
 function onFormSubmitComplementoLinha(formData, aba, headers) {
-  console.log("Processando Complemento de Linha");
-
   try {
-    const rowData = [];
-    // Inicializa rowData com valores vazios para todas as colunas
-    for (let i = 0; i < headers.length; i++) {
-        rowData[i] = '';
-    }
-
-    // === CAMPOS BÁSICOS (Colunas 1-10) ===
-    const dataIndex = getColumnIndex(headers, MAPEAMENTO_COLUNAS.DATA);
-    if (dataIndex !== -1) rowData[dataIndex] = new Date();
-    
-    const colaboradorIndex = getColumnIndex(headers, MAPEAMENTO_COLUNAS.COLABORADOR);
-    if (colaboradorIndex !== -1) rowData[colaboradorIndex] = formData.colaboradorDS;
-    
-    const solicitanteIndex = getColumnIndex(headers, MAPEAMENTO_COLUNAS.SOLICITANTE);
-    if (solicitanteIndex !== -1) rowData[solicitanteIndex] = formData.solicitante;
-    
-    const partNumberIndex = getColumnIndex(headers, MAPEAMENTO_COLUNAS.PART_NUMBER);
-    if (partNumberIndex !== -1) rowData[partNumberIndex] = formData.partNumber;
-    
-    const imagemIndex = getColumnIndex(headers, MAPEAMENTO_COLUNAS.IMAGEM);
-    if (imagemIndex !== -1) rowData[imagemIndex] = formData.imagem || '';
-    
-    const tipoProjetoIndex = getColumnIndex(headers, MAPEAMENTO_COLUNAS.TIPO_PROJETO);
-    if (tipoProjetoIndex !== -1) rowData[tipoProjetoIndex] = formData.tipoProjeto;
-    
-    const linhaProdutoIndex = getColumnIndex(headers, MAPEAMENTO_COLUNAS.LINHA_PRODUTO);
-    if (linhaProdutoIndex !== -1) rowData[linhaProdutoIndex] = formData.linhaProduto;
-
-    // Part Number DS
-    const partNumberDSIndex = getColumnIndex(headers, MAPEAMENTO_COLUNAS.PART_NUMBER_DS);
-    if (partNumberDSIndex !== -1) {
-      if (formData.partNumberDS === "Sim") {
-          rowData[partNumberDSIndex] = formData.partNumberDS_valor;
-      } else {
-          rowData[partNumberDSIndex] = formData.partNumberDS;
-      }
-    }
-
-    const tipoDesenvolvimentoIndex = getColumnIndex(headers, MAPEAMENTO_COLUNAS.TIPO_DESENVOLVIMENTO);
-    if (tipoDesenvolvimentoIndex !== -1) rowData[tipoDesenvolvimentoIndex] = formData.tipoDesenvolvimento;
-    
-    const observacaoIndex = getColumnIndex(headers, MAPEAMENTO_COLUNAS.OBSERVACAO_PROJETO);
-    if (observacaoIndex !== -1) rowData[observacaoIndex] = formData.observacao;
-
-    // === INVESTIMENTOS E CUSTOS COMPLEMENTO (Colunas 11-19, 25-26) ===
+    // 1. PRIMEIRAMENTE, EXTRAI E CONVERTE TODOS OS DADOS DO FORMULÁRIO
     const investimentoFerramentalComp = parseFloat(formData.investimento_ferramental_comp || 0);
     const investimentoAmostraComp = parseFloat(formData.investimento_amostra_comp || 0);
     const volumeMensalComp = parseFloat(formData.volume_mensal_comp || 0);
     const precoReferenciaComp = parseFloat(formData.preco_referencia_comp || 0);
-    const markupComp = parseFloat(formData.markup_comp || 0) / 100; // Converte para decimal
+    const markupComp = parseFloat(formData.markup_comp || 0);
 
-    // Coluna 11 - Investimento Ferramental Complemento
-    const invFerramentalCompIndex = getColumnIndex(headers, MAPEAMENTO_COLUNAS.INV_FERRAMENTAL_COMP);
-    if (invFerramentalCompIndex !== -1) rowData[invFerramentalCompIndex] = investimentoFerramentalComp;
+    // 2. AGORA, PREENCHE A PLANILHA USANDO AS VARIÁVEIS CRIADAS
+    const rowData = [];
+    for (let i = 0; i < headers.length; i++) { rowData[i] = ''; }
     
-    // Coluna 12 - Responsável Investimento Ferramental Complemento
-    const respFerramentalCompIndex = getColumnIndex(headers, MAPEAMENTO_COLUNAS.RESP_FERRAMENTAL_COMP);
-    if (respFerramentalCompIndex !== -1) rowData[respFerramentalCompIndex] = formData.resp_inv_ferramental_comp;
+    // === CAMPOS BÁSICOS ===
+    rowData[getColumnIndex(headers, MAPEAMENTO_COLUNAS.DATA)] = new Date();
+    rowData[getColumnIndex(headers, MAPEAMENTO_COLUNAS.COLABORADOR)] = formData.colaboradorDS;
+    rowData[getColumnIndex(headers, MAPEAMENTO_COLUNAS.SOLICITANTE)] = formData.solicitante;
+    rowData[getColumnIndex(headers, MAPEAMENTO_COLUNAS.PART_NUMBER)] = formData.partNumber;
+    rowData[getColumnIndex(headers, MAPEAMENTO_COLUNAS.IMAGEM)] = formData.imagem;
+    rowData[getColumnIndex(headers, MAPEAMENTO_COLUNAS.TIPO_PROJETO)] = formData.tipoProjeto;
+    rowData[getColumnIndex(headers, MAPEAMENTO_COLUNAS.LINHA_PRODUTO)] = formData.linhaProduto;
+    rowData[getColumnIndex(headers, MAPEAMENTO_COLUNAS.PART_NUMBER_DS)] = formData.partNumberDS;
+    rowData[getColumnIndex(headers, MAPEAMENTO_COLUNAS.TIPO_DESENVOLVIMENTO)] = formData.tipoDesenvolvimento;
     
-    // Coluna 13 - Investimento Amostra Complemento
-    const invAmostraCompIndex = getColumnIndex(headers, MAPEAMENTO_COLUNAS.INV_AMOSTRA_COMP);
-    if (invAmostraCompIndex !== -1) rowData[invAmostraCompIndex] = investimentoAmostraComp;
-    
-    // Coluna 14 - Responsável Investimento Amostra Complemento
-    const respAmostraCompIndex = getColumnIndex(headers, MAPEAMENTO_COLUNAS.RESP_AMOSTRA_COMP);
-    if (respAmostraCompIndex !== -1) rowData[respAmostraCompIndex] = formData.resp_inv_amostra_comp; // Assumindo que é o mesmo responsável
-    
-    // Coluna 15 - Data Orçamento Amostra Complemento
-    const dtOrcamentoCompIndex = getColumnIndex(headers, MAPEAMENTO_COLUNAS.DT_ORCAMENTO_COMP);
-    if (dtOrcamentoCompIndex !== -1) rowData[dtOrcamentoCompIndex] = formData.data_orcamento_amostra_comp;
-    
-    // Coluna 16 - Curva de Venda
-    const curvaVendaCompIndex = getColumnIndex(headers, MAPEAMENTO_COLUNAS.CURVA_VENDA_COMP);
-    if (curvaVendaCompIndex !== -1) rowData[curvaVendaCompIndex] = formData.curva_venda_comp;
-    
-    // Coluna 17 - Tempo Desenvolvimento Complemento
-    const timeDevCompIndex = getColumnIndex(headers, MAPEAMENTO_COLUNAS.TIME_DEV_COMP);
-    if (timeDevCompIndex !== -1) rowData[timeDevCompIndex] = formData.tempo_desenvolvimento_comp;
-    
-    // Coluna 18 - Preço Referência Complemento
-    const precoRefCompIndex = getColumnIndex(headers, MAPEAMENTO_COLUNAS.PRECO_REF_COMP);
-    if (precoRefCompIndex !== -1) rowData[precoRefCompIndex] = precoReferenciaComp;
-    
-    // Coluna 19 - Volume Mensal Complemento
-    const volMensalCompIndex = getColumnIndex(headers, MAPEAMENTO_COLUNAS.VOL_MENSAL_COMP);
-    if (volMensalCompIndex !== -1) rowData[volMensalCompIndex] = volumeMensalComp;
+    // === CAMPOS DE INVESTIMENTO (COMPLEMENTO) ===
+    rowData[getColumnIndex(headers, MAPEAMENTO_COLUNAS.INV_FERRAMENTAL_COMP)] = investimentoFerramentalComp;
+    rowData[getColumnIndex(headers, MAPEAMENTO_COLUNAS.RESP_FERRAMENTAL_COMP)] = formData.resp_inv_ferramental_comp;
+    rowData[getColumnIndex(headers, MAPEAMENTO_COLUNAS.INV_AMOSTRA_COMP)] = investimentoAmostraComp;
+    rowData[getColumnIndex(headers, MAPEAMENTO_COLUNAS.RESP_AMOSTRA_COMP)] = formData.resp_inv_amostra_comp;
+    rowData[getColumnIndex(headers, MAPEAMENTO_COLUNAS.DT_ORCAMENTO_COMP)] = formData.data_orcamento_amostra_comp;
+    rowData[getColumnIndex(headers, MAPEAMENTO_COLUNAS.CURVA_VENDA_COMP)] = formData.curva_venda_comp;
+    rowData[getColumnIndex(headers, MAPEAMENTO_COLUNAS.TIME_DEV_COMP)] = formData.tempo_desenvolvimento_comp;
+    rowData[getColumnIndex(headers, MAPEAMENTO_COLUNAS.PRECO_REF_COMP)] = precoReferenciaComp;
+    rowData[getColumnIndex(headers, MAPEAMENTO_COLUNAS.VOL_MENSAL_COMP)] = volumeMensalComp;
+    rowData[getColumnIndex(headers, MAPEAMENTO_COLUNAS.MARKUP_COMP)] = markupComp;
 
-    // Coluna 26 - Markup Complemento
-    const markupCompIndex = getColumnIndex(headers, MAPEAMENTO_COLUNAS.MARKUP_COMP);
-    if (markupCompIndex !== -1) rowData[markupCompIndex] = markupComp * 100; // Salva como porcentagem
+    // === CAMPOS DE MERCADO ===
+    rowData[getColumnIndex(headers, MAPEAMENTO_COLUNAS.FROTA_APLICACAO)] = formData.frota_aplicacao;
+    rowData[getColumnIndex(headers, MAPEAMENTO_COLUNAS.FROTA_VEICULO)] = formData.frota_veiculos;
+    rowData[getColumnIndex(headers, MAPEAMENTO_COLUNAS.QTD_VENDIDAS_FROTA)] = formData.pecasDS_vendidas;
+    rowData[getColumnIndex(headers, MAPEAMENTO_COLUNAS.TIME_REST_FROTA)] = formData.frota_rodagem;
 
-    // === CAMPOS DE MERCADO (Colunas 20-24) ===
-    // Coluna 20 - Mercado OEM
-    const oemMercadoIndex = getColumnIndex(headers, MAPEAMENTO_COLUNAS.OEM_MERCADO);
-    if (oemMercadoIndex !== -1) {
-      if (formData.mercadoOEM === "Sim") {
-          rowData[oemMercadoIndex] = formData.mercadoOEM_valor;
-      } else {
-          rowData[oemMercadoIndex] = formData.mercadoOEM;
-      }
-    }
+    // Exemplo para o PartNumberDS:
+    const partNumberDSIndex = getColumnIndex(headers, MAPEAMENTO_COLUNAS.PART_NUMBER_DS);
+    if (partNumberDSIndex !== -1) rowData[partNumberDSIndex] = formData.partNumberDS; // Simplificado
 
-    // Coluna 21 - Frota Aplicação
-    const frotaAplicacaoIndex = getColumnIndex(headers, MAPEAMENTO_COLUNAS.FROTA_APLICACAO);
-    if (frotaAplicacaoIndex !== -1) rowData[frotaAplicacaoIndex] = parseFloat(formData.frota_aplicacao || 0);
-    
-    // Coluna 22 - Frota Veículos
-    const frotaVeiculoIndex = getColumnIndex(headers, MAPEAMENTO_COLUNAS.FROTA_VEICULO);
-    if (frotaVeiculoIndex !== -1) rowData[frotaVeiculoIndex] = parseFloat(formData.frota_veiculos || 0);
-    
-    // Coluna 23 - Peças DS Vendidas
-    const qtdVendidasFrotaIndex = getColumnIndex(headers, MAPEAMENTO_COLUNAS.QTD_VENDIDAS_FROTA);
-    if (qtdVendidasFrotaIndex !== -1) rowData[qtdVendidasFrotaIndex] = parseFloat(formData.pecasDS_vendidas || 0);
-    
-    // Coluna 24 - Tempo Restante Frota
-    const timeRestFrotaIndex = getColumnIndex(headers, MAPEAMENTO_COLUNAS.TIME_REST_FROTA);
-    if (timeRestFrotaIndex !== -1) rowData[timeRestFrotaIndex] = parseFloat(formData.frota_rodagem || 0);
-    
-    // === CONCORRENTES (Colunas 27-36) ===
-    // Coluna 27 - Existe Concorrente
-    const existeConcorrenteIndex = getColumnIndex(headers, MAPEAMENTO_COLUNAS.EXISTE_CONCORRENTE);
-    if (existeConcorrenteIndex !== -1) rowData[existeConcorrenteIndex] = formData.existe_concorrente;
+    // --- CÁLCULOS FINANCEIROS ---
+    const paybackComp = calcPaybackComp(investimentoFerramentalComp, investimentoAmostraComp, volumeMensalComp, precoReferenciaComp, markupComp / 100);
+    const investimentoComp = calcInvestimentoComp(investimentoFerramentalComp, investimentoAmostraComp);
+    rowData[getColumnIndex(headers, MAPEAMENTO_COLUNAS.PAYBACK_COMP)] = paybackComp;
 
-    // Observação: A estrutura da planilha não tem "Concorrente 1 Nome" na coluna 28, mas sim "Preço do concorrente 1"
-    // Vamos mapear os nomes dos concorrentes para as colunas corretas baseadas na estrutura
-    
-    // Assumindo que os nomes dos concorrentes vão para as colunas de "Concorrente X:" (29, 31, 33, 35)
-    // E que existe uma coluna "Concorrente 1:" que não está listada mas deve existir
-    
-    // Mapeamento dos concorrentes baseado na estrutura real
-    const concorrenteNomes = [
-      { campo: 'concorrente_1_nome', coluna: MAPEAMENTO_COLUNAS.NOME_CONCORRENTE1 }, // Assumindo coluna "Concorrente 1:"
-      { campo: 'concorrente_2_nome', coluna: MAPEAMENTO_COLUNAS.NOME_CONCORRENTE2 }, // Coluna 29
-      { campo: 'concorrente_3_nome', coluna: MAPEAMENTO_COLUNAS.NOME_CONCORRENTE3 }, // Coluna 31
-      { campo: 'concorrente_4_nome', coluna: MAPEAMENTO_COLUNAS.NOME_CONCORRENTE4 }, // Coluna 33
-      { campo: 'concorrente_5_nome', coluna: MAPEAMENTO_COLUNAS.NOME_CONCORRENTE5 }  // Coluna 35
-    ];
-
-    concorrenteNomes.forEach(concorrente => {
-      const index = getColumnIndex(headers, concorrente.coluna);
-      if (index !== -1) {
-        rowData[index] = formData[concorrente.campo] || '';
-      }
-    });
-
-    // === CÁLCULOS ===
-    const paybackComp = calcPaybackComp(investimentoFerramentalComp, investimentoAmostraComp, volumeMensalComp, precoReferenciaComp, markupComp);
-    
-    // Se houver uma coluna específica para Payback Complemento
-    const paybackCompIndex = getColumnIndex(headers, MAPEAMENTO_COLUNAS.PAYBACK_COMP);
-    if (paybackCompIndex !== -1) rowData[paybackCompIndex] = paybackComp;
-
-    // === DADOS ADICIONAIS (Se existirem na planilha) ===
-    const previsaoFaturamento = parseFloat(formData.previsao_faturamento || 0);
-    const faturamentoMensalTotal = parseFloat(formData.faturamento_mensal_total || 0);
-    
-    const previsaoFaturamentoIndex = getColumnIndex(headers, MAPEAMENTO_COLUNAS.PREVISAO_FATURAMENTO);
-    if (previsaoFaturamentoIndex !== -1) rowData[previsaoFaturamentoIndex] = previsaoFaturamento;
-    
-    const faturamentoMensalTotalIndex = getColumnIndex(headers, MAPEAMENTO_COLUNAS.FATURAMENTO_MENSAL_TOTAL);
-    if (faturamentoMensalTotalIndex !== -1) rowData[faturamentoMensalTotalIndex] = faturamentoMensalTotal;
-
-    const participacaoFaturamento = calcParticipacao(previsaoFaturamento, faturamentoMensalTotal);
-    const participacaoFaturamentoIndex = getColumnIndex(headers, MAPEAMENTO_COLUNAS.PARTICIPACAO_FATURAMENTO);
-    if (participacaoFaturamentoIndex !== -1) rowData[participacaoFaturamentoIndex] = participacaoFaturamento;
-
-    // === SALVAR DADOS NA PLANILHA ===
     aba.appendRow(rowData);
-    console.log("Dados salvos na planilha");
 
-    // === ENVIO DE EMAIL ===
-    const linhaProdutoSelecionada = formData.linhaProduto;
-    const sheetEmails = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Emails");
-
-    if (!sheetEmails) {
-        throw new Error("Aba 'Emails' não encontrada. Verifique o nome da aba.");
+    // 3. FINALMENTE, ENVIA O E-MAIL (esta parte já estava correta)
+    const anexosDoEmail = [];
+    if (formData.imagem && formData.imagem.content) {
+      const folder = DriveApp.getFolderById(DRIVE_FOLDER_ID);
+      const decodedImage = Utilities.base64Decode(formData.imagem.content);
+      const imageBlob = Utilities.newBlob(decodedImage, formData.imagem.mimeType, formData.imagem.fileName);
+      const savedFile = folder.createFile(imageBlob);
+      anexosDoEmail.push(savedFile.getAs(formData.imagem.mimeType));
     }
 
+    const linhaProdutoSelecionada = formData.linhaProduto;
+    // ... (resto da lógica de e-mail que já está funcionando)
+     const sheetEmails = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Emails");
+    if (!sheetEmails) { throw new Error("Aba 'Emails' não encontrada."); }
     const emailValues = sheetEmails.getDataRange().getValues();
     const emailHeaders = emailValues[0];
     const colLinhaProdutoIndex = emailHeaders.indexOf("Linha de Produto");
-    const colNomeEngenheiroIndex = emailHeaders.indexOf("Nome do Engenheiro");
     const colEmailEngenheiroIndex = emailHeaders.indexOf("E-mail do Engenheiro");
-
-    if (colLinhaProdutoIndex === -1 || colNomeEngenheiroIndex === -1 || colEmailEngenheiroIndex === -1) {
-        throw new Error("Cabeçalhos 'Linha de Produto', 'Nome do Engenheiro' ou 'E-mail do Engenheiro' não encontrados na aba 'Emails'. Verifique a aba 'Emails'.");
-    }
+    const colNomeEngenheiroIndex = emailHeaders.indexOf("Nome do Engenheiro");
 
     let engenheiroInfo = null;
     for (let i = 1; i < emailValues.length; i++) {
-        const row = emailValues[i];
-        if (row[colLinhaProdutoIndex] === linhaProdutoSelecionada) {
-            engenheiroInfo = {
-                email: row[colEmailEngenheiroIndex],
-                nome: row[colNomeEngenheiroIndex]
-            };
-            break;
-        }
+      const row = emailValues[i];
+      if (row[colLinhaProdutoIndex] === linhaProdutoSelecionada) {
+        engenheiroInfo = { email: row[colEmailEngenheiroIndex], nome: row[colNomeEngenheiroIndex] };
+        break;
+      }
     }
-
     if (!engenheiroInfo || !engenheiroInfo.email) {
-      throw new Error(`Nenhum engenheiro ou e-mail encontrado na aba 'Emails' para a Linha de Produto: ${linhaProdutoSelecionada}. Verifique a aba 'Emails'.`);
+      throw new Error(`Nenhum engenheiro encontrado para a Linha de Produto: ${linhaProdutoSelecionada}.`);
     }
-
+    
     const destinatario = engenheiroInfo.email;
     const nomeEngenheiro = engenheiroInfo.nome;
-
     const emailTemplate = HtmlService.createTemplateFromFile('templateComplemento');
-    emailTemplate.partNumber = formData.partNumber;
+    emailTemplate.formData = formData;
+    emailTemplate.investimentoComp = investimentoComp;
     emailTemplate.paybackComp = paybackComp;
-    emailTemplate.investimentoComp = investimentoFerramentalComp + investimentoAmostraComp;
-    emailTemplate.investimentoAmostraComp = investimentoAmostraComp;
-    emailTemplate.volumeMensalComp = volumeMensalComp;
-    emailTemplate.precoReferenciaComp = precoReferenciaComp;
-    emailTemplate.markupComp = markupComp * 100;
     emailTemplate.nomeEngenheiro = nomeEngenheiro;
-
     const htmlBody = emailTemplate.evaluate().getContent();
-    const assuntoEmail = "Stage in Gate - Complemento de Linha";
-    
-    GmailApp.sendEmail(destinatario, assuntoEmail, "", {
-      htmlBody: htmlBody
-    });
+    const assuntoEmail = "Stage in Gate - Complemento de Linha: " + formData.partNumberDS;
+    const pdfBlob = Utilities.newBlob(htmlBody, 'text/html', `Relatorio_${formData.partNumberDS}.pdf`).getAs('application/pdf');
+    anexosDoEmail.push(pdfBlob);
+    const emailOptions = { htmlBody: htmlBody, attachments: anexosDoEmail };
 
-    console.log("Email enviado para:", destinatario);
-    logExecucao("FormularioHTML", "onFormSubmitComplementoLinha", "success", "Dados de Complemento de Linha salvos e email enviado.");
+    GmailApp.sendEmail(destinatario, assuntoEmail, "", emailOptions);
 
-    return { success: true, message: "Formulário de Complemento de Linha enviado com sucesso!" };
+    return { success: true, message: "Formulário enviado e e-mail disparado com sucesso!" };
 
   } catch (e) {
-    console.log("Erro:", e.message);
-    logExecucao("FormularioHTML", "onFormSubmitComplementoLinha", "error", "Erro", e.message);
-    throw new Error(`Erro ao processar formulário Complemento de Linha: ${e.message}`);
+    console.log("Erro na função onFormSubmitComplementoLinha: ", e);
+    return { success: false, message: "Os dados foram salvos, mas falhou ao enviar o email: " + e.message };
   }
 }

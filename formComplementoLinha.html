@@ -1,82 +1,284 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <base target="_top">
-  <style>
-    body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background-color: #f5f5f5; }
-    .form-container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-    .form-group { margin-bottom: 15px; }
-    label { font-weight: bold; display: block; margin-bottom: 5px; }
-    input, select, textarea { width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ccc; box-sizing: border-box; }
-    button { background-color: #007bff; color: white; border: none; padding: 10px 20px; margin-top: 20px; cursor: pointer; border-radius: 4px; }
-  </style>
-</head>
-<body>
-  <div class="form-container">
-    <h1>Formulário de Pré-Análise de Projetos</h1>
+<style>
+    /* Estilos gerais para o formulário injetado */
+    #secaoComplemento {
+        border-top: 1px solid #eee;
+        padding-top: 20px;
+        margin-top: 20px;
+    }
+    .secao-titulo {
+        font-size: 1.2em;
+        font-weight: bold;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 5px;
+    }
+    .botoes-navegacao {
+        text-align: right; /* Alinha o botão Enviar à direita */
+        margin-top: 20px;
+    }
+    .error-message {
+        color: #dc3545;
+        font-size: 0.8em;
+        margin-top: 4px;
+        height: 1em;
+    }
+    #statusEnvio {
+        margin-top: 20px;
+        padding: 10px;
+        border-radius: 4px;
+        display: none;
+    }
+    #statusEnvio.sucesso {
+        color: #155724;
+        background-color: #d4edda;
+        display: block;
+    }
+    #statusEnvio.erro {
+        color: #721c24;
+        background-color: #f8d7da;
+        display: block;
+    }
+</style>
 
-    <div id="secao1">
-      <h2>1. Identificação</h2>
-      <div class="form-group">
-        <label for="colaboradorDS">Colaborador DS:</label>
-        <input type="text" id="colaboradorDS" name="colaboradorDS" required>
-      </div>
-      <div class="form-group">
-        <label for="solicitante">Solicitante:</label>
-        <input type="text" id="solicitante" name="solicitante" required>
-      </div>
-      <div class="form-group">
-        <label for="partNumber">Part Number:</label>
-        <input type="text" id="partNumber" name="partNumber" required>
-      </div>
-      <div class="form-group">
-        <label for="imagem">Imagem (URL ou Anexo):</label>
-        <input type="text" id="imagem" name="imagem" placeholder="Opcional">
-      </div>
-      <div class="form-group">
-        <label for="tipoProjeto">Tipo de Projeto:</label>
-        <select id="tipoProjeto" name="tipoProjeto" required>
+<div id="secaoComplemento">
+    <h2>2. Detalhes do Projeto de Complemento de Linha</h2>
+
+    <div class="secao-titulo">Detalhes do Produto</div>
+    <div class="form-group">
+        <label for="linhaProduto">Qual a linha de produto?</label>
+        <select id="linhaProduto" required>
           <option value="">Selecione...</option>
-          <option value="Complemento de Linha">Complemento de Linha</option>
-          <option value="Linha Nova">Linha Nova</option>
+          <option value="Valvula_boia">Linha 10 - Válvula da Boia</option>
+          <option value="Regulador_de_pressao">Linha 11 - Regulador de Pressão</option>
+          <option value="Reparo_dos_bicos_injetores">Linha 12 - Reparo dos Bicos Injetores</option>
+          <option value="Pre_filtro">Linha 13 - Pré Filtro</option>
+          <option value="Guarnicao_de_vedacao">Linha 14 - Guarnição de Vedação</option>
+          <option value="Tubo_corrugado">Linha 15 - Tubo Corrugado</option>
+          <option value="Atuador_de_marcha_lenta">Linha 16 - Atuador de Marcha Lenta</option>
+          <option value="Sensor_MAP">Linha 17- Sensor MAP</option>
+          <option value="Sensor_de_rotacao">Linha 18 - Sensor de Rotação</option>
+          <option value="Sensor_de_fase">Linha 18 - Sensor de Fase</option>
+          <option value="Sensor_TPS">Linha 19 - Sensor TPS</option>
+          <option value="Valvula_Solenoide">Linha 20 - Válvula Solenoide</option>
+          <option value="Sensor_de_detonação">Linha 21 - Sensor de Detonação</option>
+          <option value="Sensor_de_posicao">Linha 22 - Sensor de Posição</option>
+          <option value="Sensor_de_nivel">Linha 23 - Sensor de Nível</option>
+          <option value="Flange_da_bomba_de_combustivel">Linha 24 - Flange da Bomba de Combustível</option>
+          <option value="Sensor_de_velocidade">Linha 25 - Sensor de Velocidade</option>
+          <option value="Modulo_de_combustivel">Linha 26 - Módulo de Combustível</option>
+          <option value="Porca_de_fixacao">Linha 27 - Porca de Fixação</option>
+          <option value="Sensor_de_posicao_do_cambio">Linha 28 - Sensor de posição do câmbio</option>
+          <option value="Filtro_do_sensor_MAP">Linha 29 - Filtro do Sensor MAP</option>
+          <option value="Sensor_ABS">Linha 30- Sensor ABS</option>
+          <option value="Eletrobomba">Linha 31- Eletrobomba</option>
+          <option value="Sensor_de_pressao">Linha 32- Sensor de Pressão</option>
+          <option value="Sensor_de_pressao_do_ar_condicionado">Linha 33 - Sensor de Pressão do Ar Condicionado</option>
+          <option value="Sensor_de_pressao_do_servo_freio">Linha 34 - Sensor de Pressão do Servo Freio</option>
+          <option value="Sensor_de_semente">Linha 101 - Sensor de Semente</option>
+          <option value="Sensor_do_fluxometro">Linha 102 - Sensor do Fluxometro</option>
+          <option value="Sensor_do_adubo">Linha 103 - Sensor do Adubo</option>
+          <option value="Sensor_map_agricola">Linha 117 - Sensor de MAP Agrícola</option>
+          <option value="Sensor_rotacao_agro">Linha 118 - Sensor de Rotação Agrícola</option>
+          <option value="Sensor_de_posaltura">Linha 119 - Sensor de Posição / Altura</option>
+          <option value="Sensor_nivel_agro">Linha 123 - Sensor de Nível Agrícola</option>
+          <option value="Sensor_velocidade_agro">Linha 125 - Sensor de Velocidade Agrícola</option>
+          <option value="Eletrobomba_agro">Linha 131 - Eletrobomba Agrícola</option>
         </select>
-      </div>
+        <div class="error-message"></div>
+    </div>
+        <div class="form-group" id="partNumberDsGroup" style="display: none;">
+        <label for="partNumberDS">Part Number DS:</label>
+        <input type="text" id="partNumberDS" name="partNumberDS">
+        <div class="error-message"></div>
+    </div>
+    <div class="form-group">
+        <label for="tipoDesenvolvimento">Tipo de Desenvolvimento:</label>
+        <select id="tipoDesenvolvimento" required>
+            <option value="">Selecione...</option>
+            <option value="Comprar">Comprar</option>
+            <option value="Fabricar">Fabricar</option>
+        </select>
+        <div class="error-message"></div>
     </div>
 
-    <button id="btnIniciar">Iniciar</button>
+        <div class="secao-titulo">Investimento</div>
+    <div class="form-group"><label for="investimentoFerramentalComp">Investimento Ferramental (R$):</label><input type="number" id="investimentoFerramentalComp" required><div class="error-message"></div></div>
+    <div class="form-group"><label for="resp_inv_ferramental_comp">Responsável (Ferramental):</label><input type="text" id="resp_inv_ferramental_comp" required><div class="error-message"></div></div>
+    <div class="form-group"><label for="investimentoAmostraComp">Investimento da Amostra (R$):</label><input type="number" id="investimentoAmostraComp" required><div class="error-message"></div></div>
+    <div class="form-group"><label for="resp_inv_amostra_comp">Responsável (Amostra):</label><input type="text" id="resp_inv_amostra_comp" required><div class="error-message"></div></div>
+    <div class="form-group"><label for="data_orcamento_amostra_comp">Data do Orçamento da Amostra:</label><input type="date" id="data_orcamento_amostra_comp" required><div class="error-message"></div></div>
+    <div class="form-group"><label for="tempo_desenvolvimento_comp">Tempo de Desenvolvimento:</label><input type="text" id="tempo_desenvolvimento_comp" required><div class="error-message"></div></div>
+    <div class="form-group"><label for="volumeMensalComp">Volume Mensal (und):</label><input type="number" id="volumeMensalComp" required><div class="error-message"></div></div>
+    <div class="form-group"><label for="curva_venda_comp">Curva de Venda:</label><input type="text" id="curva_venda_comp" required><div class="error-message"></div></div>
+    <div class="form-group"><label for="precoReferenciaComp">Preço de Referência (R$):</label><input type="number" id="precoReferenciaComp" required><div class="error-message"></div></div>
+    <div class="form-group"><label for="markupComp">Markup (%):</label><input type="number" id="markupComp" required><div class="error-message"></div></div>
 
-    <div id="secaoTipoProjeto"></div>
-  </div>
+    <div class="secao-titulo">Mercado e Concorrência</div>
+    <div class="form-group"><label for="frota_aplicacao">Frota por aplicação:</label><input type="number" id="frota_aplicacao" min="0"></div>
+    <div class="form-group"><label for="frota_veiculos">Frota de veículos:</label><input type="number" id="frota_veiculos" min="0"></div>
+    <div class="form-group"><label for="pecasDS_vendidas">Peças DS vendidas no mês:</label><input type="number" id="pecasDS_vendidas" min="0"></div>
+    <div class="form-group"><label for="frota_rodagem">Frota em rodagem:</label><input type="number" id="frota_rodagem" min="0"></div>
+    <div class="form-group">
+        <label>Existe concorrente:</label>
+        <div>
+            <input type="radio" id="concorrente_sim" name="existe_concorrente" value="Sim" onchange="toggleConcorrentes()"> Sim
+            <input type="radio" id="concorrente_nao" name="existe_concorrente" value="Não" checked onchange="toggleConcorrentes()"> Não
+        </div>
+    </div>
+    <div id="concorrentes_group" style="display: none;">
+        <div class="form-group"><label for="concorrente_1_nome">Concorrente 1 - Nome:</label><input type="text" id="concorrente_1_nome"><label for="concorrente_1_obs">Observação:</label><textarea id="concorrente_1_obs" rows="2"></textarea></div>
+        <div class="form-group"><label for="concorrente_2_nome">Concorrente 2 - Nome:</label><input type="text" id="concorrente_2_nome"><label for="concorrente_2_obs">Observação:</label><textarea id="concorrente_2_obs" rows="2"></textarea></div>
+        <div class="form-group"><label for="concorrente_3_nome">Concorrente 3 - Nome:</label><input type="text" id="concorrente_3_nome"><label for="concorrente_3_obs">Observação:</label><textarea id="concorrente_3_obs" rows="2"></textarea></div>
+        <div class="form-group"><label for="concorrente_4_nome">Concorrente 4 - Nome:</label><input type="text" id="concorrente_4_nome"><label for="concorrente_4_obs">Observação:</label><textarea id="concorrente_4_obs" rows="2"></textarea></div>
+        <div class="form-group"><label for="concorrente_5_nome">Concorrente 5 - Nome:</label><input type="text" id="concorrente_5_nome"><label for="concorrente_5_obs">Observação:</label><textarea id="concorrente_5_obs" rows="2"></textarea></div>
+    </div>
 
-  <script>
-    function carregarFormulario() {
-      const tipo = document.getElementById("tipoProjeto").value;
-      if (!tipo) {
-        alert("Por favor, selecione o tipo de projeto antes de continuar.");
-        return;
-      }
-      // Desabilita o botão para evitar cliques duplos e esconde
-      const btnIniciar = document.getElementById('btnIniciar');
-      btnIniciar.disabled = true;
-      btnIniciar.style.display = 'none';
+    <div class="botoes-navegacao">
+        <button type="button" id="btnEnviarComplemento">Enviar</button>
+    </div>
 
-      const container = document.getElementById("secaoTipoProjeto");
-      container.innerHTML = "<p>Carregando formulário...</p>";
+    <div id="statusEnvio"></div>
+</div>
 
-      google.script.run.withSuccessHandler(function(html) {
-        container.innerHTML = html;
-        // ESSENCIAL: Encontra e executa o script do HTML que foi carregado
-        Array.from(container.querySelectorAll("script")).forEach(oldScript => {
-          const newScript = document.createElement("script");
-          Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
-          newScript.appendChild(document.createTextNode(oldScript.innerHTML));
-          oldScript.parentNode.replaceChild(newScript, oldScript);
+<script>
+    function validarFormulario() {
+        let formValido = true;
+        // Valida todos os campos obrigatórios em toda a página (seção 1 e 2)
+        document.querySelectorAll('[required]').forEach(campo => {
+            // Verifica se o campo está visível antes de validar
+            if (campo.offsetParent !== null) {
+                if (!campo.value || campo.value.trim() === '') {
+                    formValido = false;
+                    campo.style.borderColor = '#dc3545';
+                    const errorDiv = campo.parentElement.querySelector('.error-message');
+                    if(errorDiv) errorDiv.textContent = 'Este campo é obrigatório.';
+                } else {
+                    campo.style.borderColor = '#ccc';
+                    const errorDiv = campo.parentElement.querySelector('.error-message');
+                    if(errorDiv) errorDiv.textContent = '';
+                }
+            }
         });
-      }).getFormHTML(tipo);
+        if (!formValido) {
+            alert("Existem campos obrigatórios não preenchidos. Por favor, verifique o formulário.");
+        }
+        return formValido;
     }
 
-    // Adiciona o listener ao botão Iniciar
-    document.getElementById('btnIniciar').addEventListener('click', carregarFormulario);
-  </script>
-</body>
-</html>
+    function mostrarStatus(mensagem, tipo) {
+        const statusDiv = document.getElementById('statusEnvio');
+        statusDiv.className = tipo;
+        statusDiv.textContent = mensagem;
+        statusDiv.style.display = 'block';
+        statusDiv.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function mostrarWidgetConclusao(response) {
+        const formContainer = document.getElementById('main-form-container');
+        const widgetHTML = `
+            <div style="text-align: center; padding: 40px 20px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="#28a745" viewBox="0 0 16 16">
+                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                </svg>
+                <h2 style="color: #28a745; margin-top: 15px;">Formulário Enviado!</h2>
+                <p>${response.message}</p>
+                <p style="margin-top: 30px; font-size: 14px; color: #6c757d;">Você já pode fechar esta janela.</p>
+            </div>
+        `;
+        formContainer.innerHTML = widgetHTML;
+    }
+
+    function toggleConcorrentes() {
+        const display = document.querySelector('input[name="existe_concorrente"]:checked').value === 'Sim' ? 'block' : 'none';
+        document.getElementById('concorrentes_group').style.display = display;
+    }
+
+    function handleLinhaProdutoChange() {
+        const linhaProdutoSelect = document.getElementById('linhaProduto');
+        const partNumberDsGroup = document.getElementById('partNumberDsGroup');
+        if (linhaProdutoSelect.value) {
+            partNumberDsGroup.style.display = 'block';
+        } else {
+            partNumberDsGroup.style.display = 'none';
+        }
+    }
+
+    function enviarFormularioComplemento() {
+        if (!validarFormulario()) { return; }
+        
+        document.getElementById('btnEnviarComplemento').disabled = true;
+        mostrarStatus('Processando formulário...', 'sucesso');
+        
+        const fileInput = document.getElementById('imagem');
+        const file = fileInput.files[0];
+
+        if (file) {
+            mostrarStatus('Processando imagem, por favor aguarde...', 'sucesso');
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const fileData = {
+                    fileName: file.name,
+                    mimeType: file.type,
+                    content: e.target.result.split(',')[1]
+                };
+                enviarDadosParaServidor(fileData);
+            };
+            reader.onerror = function() {
+                mostrarStatus('Erro ao ler o arquivo de imagem.', 'erro');
+                document.getElementById('btnEnviarComplemento').disabled = false;
+            };
+            reader.readAsDataURL(file);
+        } else {
+            enviarDadosParaServidor(null);
+        }
+    }
+
+    function enviarDadosParaServidor(fileData) {
+        mostrarStatus('Enviando dados, favor aguarde...', 'sucesso');
+        
+        // --- COLETA DE DADOS COMPLETA E CORRIGIDA ---
+        const formData = {
+            // Seção 1
+            colaboradorDS: document.getElementById('colaboradorDS').value,
+            solicitante: document.getElementById('solicitante').value,
+            partNumber: document.getElementById('partNumber').value,
+            tipoProjeto: document.getElementById('tipoProjeto').value,
+            // Seção 2
+            linhaProduto: document.getElementById('linhaProduto').value,
+            partNumberDS: document.getElementById('partNumberDS').value,
+            tipoDesenvolvimento: document.getElementById('tipoDesenvolvimento').value,
+            investimento_ferramental_comp: document.getElementById('investimentoFerramentalComp').value,
+            resp_inv_ferramental_comp: document.getElementById('resp_inv_ferramental_comp').value,
+            investimento_amostra_comp: document.getElementById('investimentoAmostraComp').value,
+            resp_inv_amostra_comp: document.getElementById('resp_inv_amostra_comp').value,
+            data_orcamento_amostra_comp: document.getElementById('data_orcamento_amostra_comp').value,
+            tempo_desenvolvimento_comp: document.getElementById('tempo_desenvolvimento_comp').value,
+            volume_mensal_comp: document.getElementById('volumeMensalComp').value,
+            curva_venda_comp: document.getElementById('curva_venda_comp').value,
+            preco_referencia_comp: document.getElementById('precoReferenciaComp').value,
+            markup_comp: document.getElementById('markupComp').value,
+            frota_aplicacao: document.getElementById('frota_aplicacao').value,
+            frota_veiculos: document.getElementById('frota_veiculos').value,
+            pecasDS_vendidas: document.getElementById('pecasDS_vendidas').value,
+            frota_rodagem: document.getElementById('frota_rodagem').value,
+            existe_concorrente: document.querySelector('input[name="existe_concorrente"]:checked').value,
+            concorrente_1_nome: document.getElementById('concorrente_1_nome').value,
+            concorrente_1_obs: document.getElementById('concorrente_1_obs').value,
+            imagem: fileData 
+        };
+
+        google.script.run
+            .withSuccessHandler(mostrarWidgetConclusao)
+            .withFailureHandler(error => { 
+                mostrarStatus(`Erro: ${error.message}`, 'erro');
+                document.getElementById('btnEnviarComplemento').disabled = false;
+            })
+            .processForm(formData);
+    }
+
+    // ANEXANDO TODOS OS EVENTOS NECESSÁRIOS
+    document.getElementById('btnEnviarComplemento').addEventListener('click', enviarFormularioComplemento);
+    document.querySelectorAll('input[name="existe_concorrente"]').forEach(radio => radio.addEventListener('change', toggleConcorrentes));
+    document.getElementById('linhaProduto').addEventListener('change', handleLinhaProdutoChange);
+</script>
