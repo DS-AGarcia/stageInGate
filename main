@@ -1,6 +1,5 @@
 // ID da planilha Google (substitua pelo seu ID real)
 const SPREADSHEET_ID = '13b-Fxii7FBsjiHP36t2t53uD5-fYCF0V9mmNqZPrRpQ';
-const DRIVE_FOLDER_ID = '1icoy84un660p-4NiJRlYUvOOZZ2NoXcE';
 
 const MAPEAMENTO_COLUNAS = {
   // Campos básicos (colunas 1-10)
@@ -24,7 +23,7 @@ const MAPEAMENTO_COLUNAS = {
   CURVA_VENDA_COMP: "Curva de venda:", // Coluna 16
   TIME_DEV_COMP: "Tempo de desenvolvimento: Complemento", // Coluna 17
   PRECO_REF_COMP: "Preço de referência (R$): Complemento", // Coluna 18
-  VOL_MENSAL_COMP: "Volume mensal (und): Complemento", // Coluna 19
+  VOL_MENSAL_COMP: "Volume mensal (und) Comp", // Coluna 19
   MARKUP_COMP: "Mark Up Complemento", // Coluna 26
   
   // Campos Mercado (colunas 20-27)
@@ -177,15 +176,15 @@ function calcPayback(investimentoFerramental, investimentoAmostra, volumeMensal,
  * Payback = Investimento Total / (Volume Mensal * Preço de Referência * Markup)
  * @param {number} investimentoFerramentalComp
  * @param {number} investimentoAmostraComp
- * @param {number} volumeMensalComp
+ * @param {number} volumeMensalCalculado
  * @param {number} precoReferenciaComp
  * @param {number} markupComp (em decimal)
  * @returns {number} Payback em meses
  */
-function calcPaybackComp(investimentoFerramentalComp, investimentoAmostraComp, volumeMensalComp, precoReferenciaComp, markupComp) {
+function calcPaybackComp(investimentoFerramentalComp, investimentoAmostraComp, volumeMensalCalculado, precoReferenciaComp, markupComp) {
   const investimentoTotalComp = calcInvestimentoComp(investimentoFerramentalComp, investimentoAmostraComp);
-  if (markupComp > 0 && volumeMensalComp > 0 && precoReferenciaComp > 0) {
-    return investimentoTotalComp / (volumeMensalComp * precoReferenciaComp * markupComp);
+  if (markupComp > 0 && volumeMensalCalculado > 0 && precoReferenciaComp > 0) {
+    return investimentoTotalComp / (volumeMensalCalculado * precoReferenciaComp * markupComp);
   }
   return 0;
 }
@@ -413,10 +412,46 @@ function getFormHTML(tipo) {
 // Substitua a função existente em seu main.gs por esta versão validada
 function onFormSubmitComplementoLinha(formData, aba, headers) {
   try {
+    // --- LÓGICA: CÁLCULO DE VOLUME MENSAL ---
+    const frotaAplicacao = parseFloat(formData.frota_aplicacao || 0);
+    const frotaVeiculos = parseFloat(formData.frota_veiculos || 0);
+    const pecasVendidas = parseFloat(formData.pecasDS_vendidas || 0);
+    const mercadoOem = formData.mercadoOEM; // "Sim" ou "Não"
+    const qtdConcorrentes = Number(formData.qtd_concorrentes) || 0;
+
+    // --- INÍCIO DO BLOCO DE LOG ---
+    Logger.log("--- INICIANDO LOG DE CÁLCULO DE VOLUME MENSAL ---");
+    Logger.log("Part Number em análise: " + formData.partNumber);
+    Logger.log("Valores de Entrada:");
+    Logger.log(" - Frota Aplicação: " + frotaAplicacao);
+    Logger.log(" - Frota Veículos: " + frotaVeiculos);
+    Logger.log(" - Peças Vendidas: " + pecasVendidas);
+    Logger.log(" - Mercado OEM: " + mercadoOem);
+    Logger.log(" - Qtd Concorrentes: " + qtdConcorrentes);
+    // --- FIM DO BLOCO DE LOG ---
+
+    // Cálculo 1
+    let calculo1 = 0;
+    if (pecasVendidas > 0) {
+        calculo1 = (frotaAplicacao * pecasVendidas) / frotaVeiculos;
+    }
+    Logger.log("Resultado Cálculo 1: " + calculo1);
+
+    // Lógica 2
+    const logica2 = (mercadoOem === 'Sim') ? 2 : 1;
+    Logger.log("Fator OEM (Lógica 2): " + logica2);
+
+    // Cálculo 2
+    const calculo2 = calculo1 / logica2;
+    Logger.log("Resultado Cálculo 2: " + calculo2);
+
+    // Cálculo 3 (Resultado Final)
+    const volumeMensalCalculado = Math.round(calculo2 * (1 - (0.15 * qtdConcorrentes)));
+    Logger.log("VOLUME MENSAL FINAL: " + volumeMensalCalculado)
+
     // 1. PRIMEIRAMENTE, EXTRAI E CONVERTE TODOS OS DADOS DO FORMULÁRIO
     const investimentoFerramentalComp = parseFloat(formData.investimento_ferramental_comp || 0);
     const investimentoAmostraComp = parseFloat(formData.investimento_amostra_comp || 0);
-    const volumeMensalComp = parseFloat(formData.volume_mensal_comp || 0);
     const precoReferenciaComp = parseFloat(formData.preco_referencia_comp || 0);
     const markupComp = parseFloat(formData.markup_comp || 0);
 
@@ -444,7 +479,7 @@ function onFormSubmitComplementoLinha(formData, aba, headers) {
     rowData[getColumnIndex(headers, MAPEAMENTO_COLUNAS.CURVA_VENDA_COMP)] = formData.curva_venda_comp;
     rowData[getColumnIndex(headers, MAPEAMENTO_COLUNAS.TIME_DEV_COMP)] = formData.tempo_desenvolvimento_comp;
     rowData[getColumnIndex(headers, MAPEAMENTO_COLUNAS.PRECO_REF_COMP)] = precoReferenciaComp;
-    rowData[getColumnIndex(headers, MAPEAMENTO_COLUNAS.VOL_MENSAL_COMP)] = volumeMensalComp;
+    rowData[getColumnIndex(headers, MAPEAMENTO_COLUNAS.VOL_MENSAL_COMP)] = volumeMensalCalculado;
     rowData[getColumnIndex(headers, MAPEAMENTO_COLUNAS.MARKUP_COMP)] = markupComp;
 
     // === CAMPOS DE MERCADO ===
@@ -466,25 +501,14 @@ function onFormSubmitComplementoLinha(formData, aba, headers) {
     if (partNumberDSIndex !== -1) rowData[partNumberDSIndex] = formData.partNumberDS; // Simplificado
 
     // --- CÁLCULOS FINANCEIROS ---
-    const paybackComp = calcPaybackComp(investimentoFerramentalComp, investimentoAmostraComp, volumeMensalComp, precoReferenciaComp, markupComp / 100);
+    const paybackComp = calcPaybackComp(investimentoFerramentalComp, investimentoAmostraComp, volumeMensalCalculado, precoReferenciaComp, markupComp / 100);
     const investimentoComp = calcInvestimentoComp(investimentoFerramentalComp, investimentoAmostraComp);
     rowData[getColumnIndex(headers, MAPEAMENTO_COLUNAS.PAYBACK_COMP)] = paybackComp;
 
     aba.appendRow(rowData);
 
-    // 3. FINALMENTE, ENVIA O E-MAIL (esta parte já estava correta)
-    const anexosDoEmail = [];
-    if (formData.imagem && formData.imagem.content) {
-      const folder = DriveApp.getFolderById(DRIVE_FOLDER_ID);
-      const decodedImage = Utilities.base64Decode(formData.imagem.content);
-      const imageBlob = Utilities.newBlob(decodedImage, formData.imagem.mimeType, formData.imagem.fileName);
-      const savedFile = folder.createFile(imageBlob);
-      anexosDoEmail.push(savedFile.getAs(formData.imagem.mimeType));
-    }
-
     const linhaProdutoSelecionada = formData.linhaProduto;
-    // ... (resto da lógica de e-mail que já está funcionando)
-     const sheetEmails = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Emails");
+    const sheetEmails = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Emails");
     if (!sheetEmails) { throw new Error("Aba 'Emails' não encontrada."); }
     const emailValues = sheetEmails.getDataRange().getValues();
     const emailHeaders = emailValues[0];
@@ -506,17 +530,39 @@ function onFormSubmitComplementoLinha(formData, aba, headers) {
     
     const destinatario = engenheiroInfo.email;
     const nomeEngenheiro = engenheiroInfo.nome;
-    const emailTemplate = HtmlService.createTemplateFromFile('templateComplemento');
-    emailTemplate.formData = formData;
-    emailTemplate.investimentoComp = investimentoComp;
-    emailTemplate.paybackComp = paybackComp;
-    emailTemplate.nomeEngenheiro = nomeEngenheiro;
-    const htmlBody = emailTemplate.evaluate().getContent();
-    const assuntoEmail = "Stage in Gate - Complemento de Linha: " + formData.partNumberDS;
-    const pdfBlob = Utilities.newBlob(htmlBody, 'text/html', `Relatorio_${formData.partNumberDS}.pdf`).getAs('application/pdf');
-    anexosDoEmail.push(pdfBlob);
-    const emailOptions = { htmlBody: htmlBody, attachments: anexosDoEmail };
+       
+    const templateParaPdf = HtmlService.createTemplateFromFile('templateComplemento');
+    formData.qtd_concorrentes = qtdConcorrentes;
+    formData.volume_mensal_comp = volumeMensalCalculado;
+    templateParaPdf.formData = formData;
+    templateParaPdf.investimentoComp = investimentoComp;
+    templateParaPdf.paybackComp = paybackComp;
+    templateParaPdf.nomeEngenheiro = nomeEngenheiro;
+    templateParaPdf.isForPdf = true; // Flag para o template saber que é para o PDF
+    const htmlParaPdf = templateParaPdf.evaluate().getContent();
+    
+    const templateParaEmail = HtmlService.createTemplateFromFile('templateComplemento');
+    formData.qtd_concorrentes = qtdConcorrentes;
+    formData.volume_mensal_comp = volumeMensalCalculado;
+    templateParaEmail.formData = formData;
+    templateParaEmail.investimentoComp = investimentoComp;
+    templateParaEmail.paybackComp = paybackComp;
+    templateParaEmail.nomeEngenheiro = nomeEngenheiro;
+    templateParaEmail.isForPdf = false; // Flag para o template saber que NÃO é para o PDF
+    const htmlParaEmail = templateParaEmail.evaluate().getContent();
 
+    const pdfBlob = Utilities.newBlob(htmlParaPdf, 'text/html', `Relatorio_${formData.partNumberDS}.pdf`).getAs('application/pdf');
+    
+    // 4. Define as opções do e-mail
+    const emailOptions = {
+        htmlBody: htmlParaEmail, // Usa a versão "light" para o corpo do e-mail
+        attachments: [pdfBlob]    // Anexa o PDF completo
+    };
+
+    // --- FIM DA NOVA LÓGICA ---
+
+    // 5. Envia o e-mail
+    const assuntoEmail = "Stage in Gate - Complemento de Linha: " + formData.partNumberDS;
     GmailApp.sendEmail(destinatario, assuntoEmail, "", emailOptions);
 
     return { success: true, message: "Formulário enviado e e-mail disparado com sucesso!" };

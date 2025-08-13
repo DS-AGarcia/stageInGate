@@ -1,44 +1,55 @@
 <style>
-    /* Estilos gerais para o formulário injetado */
+  /* Estilos gerais para o formulário injetado */
     #secaoComplemento {
-        border-top: 1px solid #eee;
+        border-top: 1px solid #e0dcd8; /* bege claro no lugar do cinza frio */
         padding-top: 20px;
         margin-top: 20px;
     }
+
     .secao-titulo {
         font-size: 1.2em;
         font-weight: bold;
         margin-top: 20px;
         margin-bottom: 10px;
-        border-bottom: 1px solid #ddd;
+        border-bottom: 1px solid #e0dcd8; /* mesma cor da linha superior */
         padding-bottom: 5px;
+        color: #444; /* cinza escuro suave */
     }
+
     .botoes-navegacao {
         text-align: right; /* Alinha o botão Enviar à direita */
         margin-top: 20px;
     }
+
     .error-message {
-        color: #dc3545;
+        color: #c0392b; /* vermelho terroso */
         font-size: 0.8em;
         margin-top: 4px;
         height: 1em;
     }
+
     #statusEnvio {
         margin-top: 20px;
         padding: 10px;
-        border-radius: 4px;
+        border-radius: 6px;
         display: none;
+        font-weight: bold;
     }
+
+    /* Mensagem de sucesso */
     #statusEnvio.sucesso {
-        color: #155724;
-        background-color: #d4edda;
+        color: #1e5631; /* verde escuro suave */
+        background-color: #d9f0dc; /* verde claro pastel */
         display: block;
     }
+
+    /* Mensagem de erro */
     #statusEnvio.erro {
-        color: #721c24;
-        background-color: #f8d7da;
+        color: #7b241c; /* vermelho queimado */
+        background-color: #f9e0dd; /* vermelho pastel suave */
         display: block;
     }
+
 </style>
 
 <div id="secaoComplemento">
@@ -102,23 +113,22 @@
         <div class="error-message"></div>
     </div>
 
-        <div class="secao-titulo">Investimento</div>
+    <div class="secao-titulo">Investimento</div>
     <div class="form-group"><label for="investimentoFerramentalComp">Investimento Ferramental (R$):</label><input type="number" id="investimentoFerramentalComp" required><div class="error-message"></div></div>
     <div class="form-group"><label for="resp_inv_ferramental_comp">Responsável (Ferramental):</label><input type="text" id="resp_inv_ferramental_comp" required><div class="error-message"></div></div>
     <div class="form-group"><label for="investimentoAmostraComp">Investimento da Amostra (R$):</label><input type="number" id="investimentoAmostraComp" required><div class="error-message"></div></div>
     <div class="form-group"><label for="resp_inv_amostra_comp">Responsável (Amostra):</label><input type="text" id="resp_inv_amostra_comp" required><div class="error-message"></div></div>
     <div class="form-group"><label for="data_orcamento_amostra_comp">Data do Orçamento da Amostra:</label><input type="date" id="data_orcamento_amostra_comp" required><div class="error-message"></div></div>
     <div class="form-group"><label for="tempo_desenvolvimento_comp">Tempo de Desenvolvimento:</label><input type="text" id="tempo_desenvolvimento_comp" required><div class="error-message"></div></div>
-    <div class="form-group"><label for="volumeMensalComp">Volume Mensal (und):</label><input type="number" id="volumeMensalComp" required><div class="error-message"></div></div>
     <div class="form-group"><label for="curva_venda_comp">Curva de Venda:</label><input type="text" id="curva_venda_comp" required><div class="error-message"></div></div>
     <div class="form-group"><label for="precoReferenciaComp">Preço de Referência (R$):</label><input type="number" id="precoReferenciaComp" required><div class="error-message"></div></div>
     <div class="form-group"><label for="markupComp">Markup (%):</label><input type="number" id="markupComp" required><div class="error-message"></div></div>
 
     <div class="secao-titulo">Mercado e Concorrência</div>
-    <div class="form-group"><label for="frota_aplicacao">Frota por aplicação:</label><input type="number" id="frota_aplicacao" min="0"></div>
-    <div class="form-group"><label for="frota_veiculos">Frota de veículos:</label><input type="number" id="frota_veiculos" min="0"></div>
-    <div class="form-group"><label for="pecasDS_vendidas">Peças DS vendidas no mês:</label><input type="number" id="pecasDS_vendidas" min="0"></div>
-    <div class="form-group"><label for="frota_rodagem">Frota em rodagem:</label><input type="number" id="frota_rodagem" min="0"></div>
+    <div class="form-group"><label for="frota_aplicacao">Tamanho da frota de veículos da aplicação:</label><input type="number" id="frota_aplicacao" min="0"></div>
+    <div class="form-group"><label for="frota_veiculos">Tamanho da Frota de veículos (de uma aplicação próxima, de um item já vendido pela DS):</label><input type="number" id="frota_veiculos" min="0"></div>
+    <div class="form-group"><label for="pecasDS_vendidas">Quantidade de peças vendidas (desse item próximo) pela DS:</label><input type="number" id="pecasDS_vendidas" min="0"></div>
+    <div class="form-group"><label for="frota_rodagem">Tempo restante de rodagem da frota:</label><input type="number" id="frota_rodagem" min="0"></div>
     <div class="form-group">
     <div class="form-group">
         <label>Possui peça OEM no mercado?</label>
@@ -137,14 +147,42 @@
             <input type="radio" id="concorrente_nao" name="existe_concorrente" value="Não" checked onchange="toggleConcorrentes()"> Não
         </div>
     </div>
-    <div id="concorrentes_group" style="display: none;">
-        <div class="form-group"><label for="concorrente_1_nome">Concorrente 1 - Nome:</label><input type="text" id="concorrente_1_nome"><label for="concorrente_1_obs">Observação:</label><textarea id="concorrente_1_obs" rows="2"></textarea></div>
-        <div class="form-group"><label for="concorrente_2_nome">Concorrente 2 - Nome:</label><input type="text" id="concorrente_2_nome"><label for="concorrente_2_obs">Observação:</label><textarea id="concorrente_2_obs" rows="2"></textarea></div>
-        <div class="form-group"><label for="concorrente_3_nome">Concorrente 3 - Nome:</label><input type="text" id="concorrente_3_nome"><label for="concorrente_3_obs">Observação:</label><textarea id="concorrente_3_obs" rows="2"></textarea></div>
-        <div class="form-group"><label for="concorrente_4_nome">Concorrente 4 - Nome:</label><input type="text" id="concorrente_4_nome"><label for="concorrente_4_obs">Observação:</label><textarea id="concorrente_4_obs" rows="2"></textarea></div>
-        <div class="form-group"><label for="concorrente_5_nome">Concorrente 5 - Nome:</label><input type="text" id="concorrente_5_nome"><label for="concorrente_5_obs">Observação:</label><textarea id="concorrente_5_obs" rows="2"></textarea></div>
+     <div id="concorrentes_group" style="display: none;">
+        <div class="form-group">
+            <label for="qtd_concorrentes">Quantidade de Concorrentes:</label>
+            <input type="number" id="qtd_concorrentes" name="qtd_concorrentes" min="0" value="0">
+        </div>
+        <div class="form-group">
+            <label for="concorrente_1_nome">Concorrente 1 - Nome:</label>
+            <input type="text" id="concorrente_1_nome" name="concorrente_1_nome">
+            <label for="concorrente_1_obs">Observação / Preço:</label>
+            <textarea id="concorrente_1_obs" name="concorrente_1_obs" rows="2"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="concorrente_2_nome">Concorrente 2 - Nome:</label>
+            <input type="text" id="concorrente_2_nome" name="concorrente_2_nome">
+            <label for="concorrente_2_obs">Observação / Preço:</label>
+            <textarea id="concorrente_2_obs" name="concorrente_2_obs" rows="2"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="concorrente_3_nome">Concorrente 3 - Nome:</label>
+            <input type="text" id="concorrente_3_nome" name="concorrente_3_nome">
+            <label for="concorrente_3_obs">Observação / Preço:</label>
+            <textarea id="concorrente_3_obs" name="concorrente_3_obs" rows="2"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="concorrente_4_nome">Concorrente 4 - Nome:</label>
+            <input type="text" id="concorrente_4_nome" name="concorrente_4_nome">
+            <label for="concorrente_4_obs">Observação / Preço:</label>
+            <textarea id="concorrente_4_obs" name="concorrente_4_obs" rows="2"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="concorrente_5_nome">Concorrente 5 - Nome:</label>
+            <input type="text" id="concorrente_5_nome" name="concorrente_5_nome">
+            <label for="concorrente_5_obs">Observação / Preço:</label>
+            <textarea id="concorrente_5_obs" name="concorrente_5_obs" rows="2"></textarea>
+        </div>
     </div>
-
     <div class="botoes-navegacao">
         <button type="button" id="btnEnviarComplemento">Enviar</button>
     </div>
@@ -155,9 +193,7 @@
 <script>
     function validarFormulario() {
         let formValido = true;
-        // Valida todos os campos obrigatórios em toda a página (seção 1 e 2)
         document.querySelectorAll('[required]').forEach(campo => {
-            // Verifica se o campo está visível antes de validar
             if (campo.offsetParent !== null) {
                 if (!campo.value || campo.value.trim() === '') {
                     formValido = false;
@@ -201,13 +237,13 @@
     }
 
     function toggleConcorrentes() {
-      const display = document.querySelector('input[name="existe_concorrente"]:checked').value === 'Sim' ? 'block' : 'none';
-      document.getElementById('concorrentes_group').style.display = display;
+        const display = document.querySelector('input[name="existe_concorrente"]:checked').value === 'Sim' ? 'block' : 'none';
+        document.getElementById('concorrentes_group').style.display = display;
     }
 
     function toggleOemField() {
-      const display = document.querySelector('input[name="mercadoOEM"]:checked').value === 'Sim' ? 'block' : 'none';
-      document.getElementById('oem_details_group').style.display = display;
+        const display = document.querySelector('input[name="mercadoOEM"]:checked').value === 'Sim' ? 'block' : 'none';
+        document.getElementById('oem_details_group').style.display = display;
     }
 
     function handleLinhaProdutoChange() {
@@ -241,7 +277,7 @@
                 enviarDadosParaServidor(fileData);
             };
             reader.onerror = function() {
-                mostrarStatus('Erro ao ler o arquivo de imagem.', 'erro');
+                mostrarStatus('Erro ao ler o arquivo de imagem. Tente novamente ou use uma imagem menor.', 'erro');
                 document.getElementById('btnEnviarComplemento').disabled = false;
             };
             reader.readAsDataURL(file);
@@ -251,16 +287,13 @@
     }
 
     function enviarDadosParaServidor(fileData) {
-        mostrarStatus('Enviando dados, favor aguarde...', 'sucesso');
+        mostrarStatus('Enviando dados para o servidor...', 'sucesso');
         
-        // --- COLETA DE DADOS COMPLETA E CORRIGIDA ---
         const formData = {
-            // Seção 1
             colaboradorDS: document.getElementById('colaboradorDS').value,
             solicitante: document.getElementById('solicitante').value,
             partNumber: document.getElementById('partNumber').value,
             tipoProjeto: document.getElementById('tipoProjeto').value,
-            // Seção 2
             linhaProduto: document.getElementById('linhaProduto').value,
             partNumberDS: document.getElementById('partNumberDS').value,
             tipoDesenvolvimento: document.getElementById('tipoDesenvolvimento').value,
@@ -270,7 +303,6 @@
             resp_inv_amostra_comp: document.getElementById('resp_inv_amostra_comp').value,
             data_orcamento_amostra_comp: document.getElementById('data_orcamento_amostra_comp').value,
             tempo_desenvolvimento_comp: document.getElementById('tempo_desenvolvimento_comp').value,
-            volume_mensal_comp: document.getElementById('volumeMensalComp').value,
             curva_venda_comp: document.getElementById('curva_venda_comp').value,
             preco_referencia_comp: document.getElementById('precoReferenciaComp').value,
             markup_comp: document.getElementById('markupComp').value,
@@ -281,6 +313,7 @@
             mercadoOEM: document.querySelector('input[name="mercadoOEM"]:checked').value,
             mercadoOEM_valor: document.getElementById('mercadoOEM_valor').value,
             existe_concorrente: document.querySelector('input[name="existe_concorrente"]:checked').value,
+            qtd_concorrentes: document.getElementById('qtd_concorrentes').value,
             concorrente_1_nome: document.getElementById('concorrente_1_nome').value,
             concorrente_1_obs: document.getElementById('concorrente_1_obs').value,
             concorrente_2_nome: document.getElementById('concorrente_2_nome').value,
@@ -291,7 +324,7 @@
             concorrente_4_obs: document.getElementById('concorrente_4_obs').value,
             concorrente_5_nome: document.getElementById('concorrente_5_nome').value,
             concorrente_5_obs: document.getElementById('concorrente_5_obs').value,
-            imagem: fileData  
+            imagem: fileData 
         };
 
         google.script.run

@@ -3,18 +3,103 @@
 <head>
     <base target="_top">
     <style>
-        body { font-family: Arial, sans-serif; color: #333; margin: 0; padding: 20px; background-color: #f9f9f9; }
-        .container { background-color: #ffffff; border: 1px solid #ddd; padding: 20px; max-width: 700px; margin: auto; }
-        .header { font-size: 22px; font-weight: bold; color: #f57c00; margin-bottom: 20px; }
-        .section-title { font-size: 18px; font-weight: bold; color: #333; margin-top: 25px; margin-bottom: 10px; border-bottom: 2px solid #f57c00; padding-bottom: 5px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-        td.label { font-weight: bold; background-color: #f2f2f2; width: 40%; }
-        .footer { margin-top: 30px; font-size: 12px; color: #888; text-align: center; }
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+            line-height: 1.5;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            padding: 25px;
+            max-width: 700px;
+            margin: auto;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            max-width: 200px; /* para email */
+            width: 100%;
+            height: auto;
+        }
+
+        @media print {
+            .logo {
+                max-width: 150px; /* reduz no PDF/A4 */
+            }
+        }
+
+        .header {
+            font-size: 22px;
+            font-weight: 600;
+            color: #cc0000;
+            margin-bottom: 15px;
+        }
+
+        p {
+            margin: 8px 0;
+            font-size: 14px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #444;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #cc0000;
+            padding-bottom: 4px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+
+        td {
+            border: 1px solid #ddd;
+            padding: 8px 10px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        td.label {
+            font-weight: 600;
+            background-color: #f7f7f7;
+            width: 40%;
+            color: #333;
+        }
+
+        tr:nth-child(even) td {
+            background-color: #fafafa;
+        }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 11px;
+            color: #777;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <div class="logo-container">
+            <img src="https://drive.google.com/uc?export=view&id=1FUDOcpen4XFJdIpQCFKpF0wxyZQD72fT" alt="Logo da Empresa" class="logo">
+        </div>
+
         <div class="header">Análise de Projeto: Complemento de Linha</div>
         <p>Olá, <?!= nomeEngenheiro ?>.</p>
         <p>Um novo projeto foi submetido para sua análise com os seguintes detalhes:</p>
@@ -43,20 +128,19 @@
             <tr><td class="label">Investimento Amostra (R$)</td><td>R$ <?!= parseFloat(formData.investimento_amostra_comp || 0).toFixed(2) ?></td></tr>
             <tr><td class="label">Responsável (Amostra)</td><td><?!= formData.resp_inv_amostra_comp ?></td></tr>
             <tr><td class="label">Data do Orçamento da Amostra</td><td><?!= formData.data_orcamento_amostra_comp ?></td></tr>
-            <tr><td class="label">Volume Mensal (und)</td><td><?!= formData.volume_mensal_comp ?></td></tr>
             <tr><td class="label">Preço de Referência (R$)</td><td>R$ <?!= parseFloat(formData.preco_referencia_comp || 0).toFixed(2) ?></td></tr>
             <tr><td class="label">Mark Up (%)</td><td><?!= parseFloat(formData.markup_comp || 0).toFixed(2) ?>%</td></tr>
             <tr><td class="label"><strong>Investimento Total (R$)</strong></td><td><strong>R$ <?!= investimentoComp.toFixed(2) ?></strong></td></tr>
+            <tr><td class="label"><strong>Volume Mensal (und)</strong></td><td><strong><?!= formData.volume_mensal_comp ?></strong></td></tr>
             <tr><td class="label"><strong>Payback (meses)</strong></td><td><strong><?!= paybackComp.toFixed(2) ?></strong></td></tr>
         </table>
         
         <div class="section-title">Análise de Mercado</div>
         <table>
-            <tr><td class="label">Frota por Aplicação</td><td><?!= formData.frota_aplicacao ?></td></tr>
-            <tr><td class="label">Frota de Veículos</td><td><?!= formData.frota_veiculos ?></td></tr>
-            <tr><td class="label">Peças DS Vendidas no Mês</td><td><?!= formData.pecasDS_vendidas ?></td></tr>
-            <tr><td class="label">Frota em Rodagem</td><td><?!= formData.frota_rodagem ?></td></tr>
-            
+            <tr><td class="label">Tamanho da frota de veículos da aplicação</td><td><?!= formData.frota_aplicacao ?></td></tr>
+            <tr><td class="label">Tamanho da Frota de veículos (de uma aplicação próxima, de um item já vendido pela DS)</td><td><?!= formData.frota_veiculos ?></td></tr>
+            <tr><td class="label">Quantidade de peças vendidas (desse item próximo) pela DS</td><td><?!= formData.pecasDS_vendidas ?></td></tr>
+            <tr><td class="label">Tempo restante de rodagem da frota: </td><td><?!= formData.frota_rodagem ?></td></tr>
             <tr><td class="label">Possui Peça OEM no Mercado?</td><td><?!= formData.mercadoOEM ?></td></tr>
             <? if (formData.mercadoOEM === 'Sim' && formData.mercadoOEM_valor) { ?>
                 <tr><td class="label">Observações OEM</td><td><?!= formData.mercadoOEM_valor ?></td></tr>
@@ -66,8 +150,9 @@
         <div class="section-title">Concorrência</div>
         <table>
             <tr><td class="label">Existe Concorrente?</td><td><?!= formData.existe_concorrente ?></td></tr>
-            
             <? if (formData.existe_concorrente === 'Sim') { ?>
+                <tr><td class="label">Quantidade de Concorrentes</td><td><?!= formData.qtdConcorrentes ?></td></tr>
+                
                 <? for (var i = 1; i <= 5; i++) { ?>
                     <? if (formData['concorrente_' + i + '_nome']) { ?>
                         <tr><td class="label" style="background-color: #e0e0e0;">Concorrente <?= i ?></td><td style="background-color: #e0e0e0;"><?!= formData['concorrente_' + i + '_nome'] ?></td></tr>
@@ -77,6 +162,13 @@
             <? } ?>
         </table>
         
+        <? if (isForPdf && formData.imagem && formData.imagem.content) { ?>
+            <div class="section-title">Imagem do Produto</div>
+            <div>
+                <img src="data:<?!= formData.imagem.mimeType ?>;base64,<?!= formData.imagem.content ?>" style="max-width: 650px; width: 100%; height: auto; border: 1px solid #ddd;">
+            </div>
+        <? } ?>
+
         <div class="footer">
             Esta é uma mensagem automática gerada pelo sistema Stage-in-Gate.
         </div>
